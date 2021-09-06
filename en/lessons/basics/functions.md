@@ -3,31 +3,32 @@ version: 1.0.0
 title: Functions
 ---
 
-Functions are at the heart of every Haskell program, and are first-class in the language.
+Functions are at the heart of every Haskell programme, and are first-class in the language.  
+They can be passed as parameters to other functions, and returned as computation results.  
 You'll see some examples of functions below.
 
 {% include toc.html %}
 
 ## Anonymous Functions
 
-Anonymos functions, or Lambdas, are one of the building blocks of Haskell. They have the following syntax:
+Anonymous functions, or Lambdas, are one of the building blocks of Haskell. They have the following syntax:
 
 **Structure of a lambda**
 ```
- ╭─ "head", the declaration of the input bindigs
+ ╭─ input of the function
  │ 
- │ ╭─ Separator between head and body
+ │ ╭─ Separator between input and output
  │ │ 
- │ │  ╭─ Body of the lambda
+ │ │  ╭─ output of the function
 \x -> x
 ```
 
-And incidentally, you have just seen one of the most primordial functions: The identity function, or `id`.  
+And incidentally, the example above is one of the most primordial functions: The identity function, or `id`.  
 This function is very simple, as it returns precisely the argument that you pass to it.
 
-### Syntactic Sugars
+In Lambdas, the input parameter can be any name, the output can be any expression.
 
-#### Currying
+### Syntactic Sugar: Currying
 
 In Haskell, all your functions have one argument. Inspired by the Lambda Calculus, this design is however extended in
 the language through syntactic sugar that allows you to express yourself better:
@@ -64,15 +65,6 @@ function (x) {
 3
 ```
 
-#### Tacit, or "point-free" style
-
-Tacit style allows you to omit the arguments (or "points") of a function when declaring or applying it.  
-While it can be quicker and help with equational reasoning, the loss of readability that it incurs needs to be a factor
-in your decision to use it.
-
-For example, the function that adds 1 to a number, `(\x -> x + 1)` can be reduced to `(+1)`.  
-These functions are equivalent in every point except their syntax.
-
 ### Function Application
 
 The function application syntax is the following:
@@ -95,7 +87,7 @@ much like in the above JavaScript example, it will return a function if you only
 ```
 
 This ability to do partial application unlocks many abilities, one of which allowing you to build computations whose
-parameters are not available all at the same time during the program's lifetime.
+parameters are not available all at the same time during the programme's lifetime.
 
 ## Named functions
 
@@ -126,8 +118,8 @@ Some of the most well-known higher-order functions out there are `map` and `filt
 ghci> map (\x -> x + 2) [1,2,3,4]
 [3,4,5,6]
 
-ghci> filter (\x -> x > 3) [1,2,3,4,5,6]
-[4,5,6]
+ghci> filter odd [1,2,3,4,5,6]
+[1,3,5]
 ```
 
 ## Local definitions: `where` & `let … in`
@@ -205,6 +197,38 @@ ghci> let processInt4 x = (addOne . timesTwo . addOne . timesTwo) x
 ghci> processInt4 5
 23
 ```
+
+## Bonus: Tacit, or "point-free" style
+
+Tacit style allows you to omit the arguments (or "points") of a function when declaring or applying it.  
+While it can be quicker and help with equational reasoning, the loss of readability that it incurs needs to be a factor
+in your decision to use it.
+
+For example, a wrapper function that does not change its arguments may as well not define them in the function declaration:
+
+```Haskell
+fun2 x y = fun1 x y
+```
+
+can perfectly be translated to
+
+```Haskell
+fun2 = fun1
+```
+
+Another example is the function that searches for a number in a list, 
+
+```haskell
+(\list -> elem 2 list)
+```
+
+can be reduced to
+
+```Haskell
+elem 2
+```
+
+And these functions are equivalent.
 
 ---
 
