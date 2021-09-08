@@ -26,7 +26,7 @@ Anonymous functions, or Lambdas, are one of the building blocks of Haskell. They
 And incidentally, the example above is one of the most primordial functions: The identity function, or `id`.  
 This function is very simple, as it returns precisely the argument that you pass to it.
 
-In Lambdas, the input parameter can be any name, the output can be any expression.
+In Lambdas, the input parameter can be any name, and the output can be any expression.
 
 ### Syntactic Sugar: Currying
 
@@ -41,7 +41,7 @@ the language through syntactic sugar that allows you to express yourself better:
 \x -> \y -> x + y
 ```
 
-The term is currification: Your function of two arguments has been transformed behind the scenes into a function
+The term is currification: your function of two arguments has been transformed behind the scenes into a function
 of one argument containing another function of one argument, containing itself the operation.  
 In Javascript, this would be expressed like this:
 
@@ -124,7 +124,7 @@ ghci> filter odd [1,2,3,4,5,6]
 
 ## Local definitions: `where` & `let … in`
 
-You can introduce bindings, such as local definition or intermediate results, through two different syntaxes:  
+You can introduce bindings, such as local definitions or intermediate results, through two different syntaxes:  
 The `where` keyword, and the `let … in` construct.
 
 ### `where`
@@ -138,11 +138,13 @@ processInt x = timesTwo (addOne x)
     timesTwo z = z * 2
 ```
 
+_Note: The binding `x` is reusable throught the rest of the bindings._
+
 Other functions will be unable to use `addOne` and `timesTwo` since they belong to the scope of `processInt`.
 
 ### `let … in`
 
-you can use its sibling, `let`, to produce the same result:
+You can use its sibling, `let`, to produce the same result:
 
 ```haskell
 processInt2 x =
