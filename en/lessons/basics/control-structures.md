@@ -1,43 +1,111 @@
 ---
-version: 1.1.1
+version: 1.0.0
 title: Control Structures
 ---
 
-In this lesson we will look at the control structures available to us in Elixir.
+Haskell functions are definitions, not lists of instructions. 
+So instead of controlling the execution order of your program, control structures affect how results are defined. 
+It can take some time to get accustomed to this difference, but once you are they will feel natural.
+
+Note that all of the structures can be used directly in the definition of a function, 
+as well as in the definition of any intermediate value. We will see examples of both.
+
+Let's have a look at the control structures available in Haskell, and some examples of how they work.
 
 {% include toc.html %}
 
-## `if` and `unless`
+## If Statements
 
-Chances are you've encountered `if/2` before, and if you've used Ruby you're familiar with `unless/2`.
-In Elixir they work much the same way but they are defined as macros, not language constructs. You can find their implementation in the [Kernel module](https://hexdocs.pm/elixir/Kernel.html).
+Haskell provides a simple set of keywords for `if` statments.
+There is only a single `else` condition.
 
-It should be noted that in Elixir, the only falsey values are `nil` and the boolean `false`.
+```Haskell
+-- Is this integer even or odd?
+evenOrOdd :: Int -> Text
+evenOrOdd val = 
+    if val `mod` 2 == 0 then "Value is even" else "Value is odd"
 
-```elixir
-iex> if String.valid?("Hello") do
-...>   "Valid string!"
-...> else
-...>   "Invalid string."
-...> end
-"Valid string!"
+-- How to navigate a traffic light
+trafficLight :: Text -> Text
+trafficLight lightColor = 
+    if (lightColor == "Red" || lightColor == "Yellow")
+    then "Slown down"
+    else "Roll through"
 
-iex> if "a string value" do
-...>   "Truthy"
-...> end
-"Truthy"
+-- Give a nice description for the weather
+-- Note how `warmOrCol` and `niceOrGloomy` are defined in a let block then 
+-- used in the final definition
+weatherDescription :: Text -> Int -> Text
+weatherDescription weather tempInC = let
+    warmOrCold   = if tempInC > 21       then "It's warm" else "It's cold"
+    niceOrGloomy = if weather == "sunny" then "nice out"  else "gloomy out"
+    in
+    warmOrCold <> " and " <> niceOrGloomy
 ```
 
-Using `unless/2` is like `if/2` only it works on the negative:
+`if` statements are not the most common control structure. 
+They are handy if you have a simple definition, and don't need one of the more
+flexible structures we will see soon
 
-```elixir
-iex> unless is_integer("hello") do
-...>   "Not an Int"
-...> end
-"Not an Int"
+## Case Statements
+
+Case statements offer a way to switch on any one of a number of possible values.
+
+```Haskell
+-- Offer some helpful advice, given the weather
+weatherAdvice :: Text -> Text
+weatherAdvice weatherDescription = 
+    case weatherDescription of
+        "fair"     -> "It'll be nice today"
+        "rainy"    -> "Bring an umbrella"
+        "sunny"    -> "Wear sunscreen"
+        "freezing" -> "You'll need a coat"
+        otherwise  -> "Not sure"
 ```
 
-## `case`
+Case statements use a feature called Pattern Matching to decide which case to
+choose, we will explore this further in the next chapter
+
+## Guards
+
+Guards allow you to choose between one of many possible conditions. They are
+similar to an if-else if structure
+
+```Haskell
+-- Subjective descriptions of temperature
+subjectiveTemp :: Int -> Text
+subjectiveTemp tmpInC
+    | tmpInC <= 0                  = "Freezing"
+    | tmpInC > 0   && tmpInC <= 20 = "Cold"
+    | tmpInC > 20  && tmpInC <= 30 = "Comfortable"
+    | tmpInC > 30                  = "Hot"
+
+
+-- Clothing Sizer
+-- Note that `yourSize` is defined in a where clause, then used in the
+-- definition
+whatSize :: Int -> Text
+whatSize heightInCm = "You're a size " <> yourSize
+  where
+    yourSize
+        | heightInCm > 0   && heightInCm <= 166 = " Small"
+        | heightInCm > 166 && heightInCm <= 178 = " Medium"
+        | heightInCm > 178                      = " Large"
+        | otherwise                             = " Not sure"
+
+-- State which value is bigger
+biggerOrSmaller :: Int -> Int -> Text
+biggerOrSmaller val1 val2
+    | val1 > val2 = "Value 1 is bigger"
+    | val2 > val1 = "Value 2 is bigger"
+    | otherwise   = "Both values are equal"
+```
+
+
+
+
+
+## Old Elixir Stuff
 
 If it's necessary to match against multiple patterns we can use `case/2`:
 
