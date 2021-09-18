@@ -3,23 +3,40 @@ version: 1.0.0
 title: Control Structures
 ---
 
-Haskell functions are definitions, not lists of instructions. 
-So instead of controlling the execution order of your program, control structures affect how results are defined. 
-It can take some time to get accustomed to this difference, but once you are they will feel natural.
+Recall that Haskell functions are *definitions*, not lists of instructions
 
-Note that all of the structures can be used directly in the definition of a function, 
-as well as in the definition of any intermediate value. We will see examples of both.
+In imperative programming, control structures are used to decide which block of
+code should be executed
 
-Let's have a look at the control structures available in Haskell, and some examples of how they work.
+In Haskell, they are used instead to decide how a certain value should be
+defined
+
+__Note__: Usually control structures are used directly in the definition of a 
+function, but they can also be used in the definition of any intermediate
+value inside a function (we will see examples of both)
+
+Let's have a look at the control structures available in Haskell, and some
+examples of how they work
 
 {% include toc.html %}
 
+## Preamble
+
+You will need to add the following lines to the top of your Haskell source 
+file (`.hs`) to be able to run these examples
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Text ( Text )
+```
+
 ## If Statements
 
-Haskell provides a simple set of keywords for `if` statments.
-There is only a single `else` condition.
+Haskell provides a simple set of keywords for `if` statments, with only a 
+single `else` condition
 
-```Haskell
+```haskell
 -- Is this integer even or odd?
 evenOrOdd :: Int -> Text
 evenOrOdd val = 
@@ -29,11 +46,11 @@ evenOrOdd val =
 trafficLight :: Text -> Text
 trafficLight lightColor = 
     if (lightColor == "Red" || lightColor == "Yellow")
-    then "Slown down"
+    then "Slow down"
     else "Roll through"
 
 -- Give a nice description for the weather
--- Note how `warmOrCol` and `niceOrGloomy` are defined in a let block then 
+-- Note how `warmOrCold` and `niceOrGloomy` are defined in a let block then 
 -- used in the final definition
 weatherDescription :: Text -> Int -> Text
 weatherDescription weather tempInC = let
@@ -43,15 +60,16 @@ weatherDescription weather tempInC = let
     warmOrCold <> " and " <> niceOrGloomy
 ```
 
-`if` statements are not the most common control structure. 
+`if` statements are not the most common control structure 
+
 They are handy if you have a simple definition, and don't need one of the more
 flexible structures we will see soon
 
 ## Case Statements
 
-Case statements offer a way to switch on any one of a number of possible values.
+Case statements offer a way to switch on any one of a number of possible values
 
-```Haskell
+```haskell
 -- Offer some helpful advice, given the weather
 weatherAdvice :: Text -> Text
 weatherAdvice weatherDescription = 
@@ -63,16 +81,19 @@ weatherAdvice weatherDescription =
         otherwise  -> "Not sure"
 ```
 
-Case statements use a feature called Pattern Matching to decide which case to
-choose, we will explore this further in the next chapter
+Case statements use a feature called *Pattern Matching* to decide which case to
+choose; we will explore this further in the next chapter
 
 ## Guards
 
-Guards allow you to choose between one of many possible conditions. They are
-similar to an if-else if structure
+Guards allow you to choose between one of many possible conditions; they are
+similar to an `if`-`else if` structure
 
-```Haskell
+When using guards to define a value, the `=` sign is omitted
+
+```haskell
 -- Subjective descriptions of temperature
+-- Note the lack of an `=` sign after the function name
 subjectiveTemp :: Int -> Text
 subjectiveTemp tmpInC
     | tmpInC <= 0                  = "Freezing"
@@ -101,175 +122,3 @@ biggerOrSmaller val1 val2
     | otherwise   = "Both values are equal"
 ```
 
-
-
-
-
-## Old Elixir Stuff
-
-If it's necessary to match against multiple patterns we can use `case/2`:
-
-```elixir
-iex> case {:ok, "Hello World"} do
-...>   {:ok, result} -> result
-...>   {:error} -> "Uh oh!"
-...>   _ -> "Catch all"
-...> end
-"Hello World"
-```
-
-The `_` variable is an important inclusion in `case/2` statements. Without it, failure to find a match will raise an error:
-
-```elixir
-iex> case :even do
-...>   :odd -> "Odd"
-...> end
-** (CaseClauseError) no case clause matching: :even
-
-iex> case :even do
-...>   :odd -> "Odd"
-...>   _ -> "Not Odd"
-...> end
-"Not Odd"
-```
-
-Consider `_` as the `else` that will match "everything else".
-
-Since `case/2` relies on pattern matching, all of the same rules and restrictions apply.
-If you intend to match against existing variables you must use the pin `^/1` operator:
-
-```elixir
-iex> pie = 3.14
- 3.14
-iex> case "cherry pie" do
-...>   ^pie -> "Not so tasty"
-...>   pie -> "I bet #{pie} is tasty"
-...> end
-"I bet cherry pie is tasty"
-```
-
-Another neat feature of `case/2` is its support for guard clauses:
-
-_This example comes directly from the official Elixir [Getting Started](https://elixir-lang.org/getting-started/case-cond-and-if.html#case) guide._
-
-```elixir
-iex> case {1, 2, 3} do
-...>   {1, x, 3} when x > 0 ->
-...>     "Will match"
-...>   _ ->
-...>     "Won't match"
-...> end
-"Will match"
-```
-
-Check the official docs for [Expressions allowed in guard clauses](https://hexdocs.pm/elixir/guards.html#list-of-allowed-expressions).
-
-## `cond`
-
-When we need to match conditions rather than values we can turn to `cond/1`; this is akin to `else if` or `elsif` from other languages:
-
-_This example comes directly from the official Elixir [Getting Started](https://elixir-lang.org/getting-started/case-cond-and-if.html#cond) guide._
-
-```elixir
-iex> cond do
-...>   2 + 2 == 5 ->
-...>     "This will not be true"
-...>   2 * 2 == 3 ->
-...>     "Nor this"
-...>   1 + 1 == 2 ->
-...>     "But this will"
-...> end
-"But this will"
-```
-
-Like `case/2`, `cond/1` will raise an error if there is no match.
-To handle this, we can define a condition set to `true`:
-
-```elixir
-iex> cond do
-...>   7 + 1 == 0 -> "Incorrect"
-...>   true -> "Catch all"
-...> end
-"Catch all"
-```
-
-## `with`
-
-The special form `with/1` is useful when you might use a nested `case/2` statement or situations that cannot cleanly be piped together. The `with/1` expression is composed of the keywords, the generators, and finally an expression.
-
-We'll discuss generators more in the [list comprehensions lesson](../comprehensions/), but for now we only need to know they use [pattern matching](../pattern-matching/) to compare the right side of the `<-` to the left.
-
-We'll start with a simple example of `with/1` and then look at something more:
-
-```elixir
-iex> user = %{first: "Sean", last: "Callan"}
-%{first: "Sean", last: "Callan"}
-iex> with {:ok, first} <- Map.fetch(user, :first),
-...>      {:ok, last} <- Map.fetch(user, :last),
-...>      do: last <> ", " <> first
-"Callan, Sean"
-```
-
-In the event that an expression fails to match, the non-matching value will be returned:
-
-```elixir
-iex> user = %{first: "doomspork"}
-%{first: "doomspork"}
-iex> with {:ok, first} <- Map.fetch(user, :first),
-...>      {:ok, last} <- Map.fetch(user, :last),
-...>      do: last <> ", " <> first
-:error
-```
-
-Now let's look at a larger example without `with/1` and then see how we can refactor it:
-
-```elixir
-case Repo.insert(changeset) do
-  {:ok, user} ->
-    case Guardian.encode_and_sign(user, :token, claims) do
-      {:ok, token, full_claims} ->
-        important_stuff(token, full_claims)
-
-      error ->
-        error
-    end
-
-  error ->
-    error
-end
-```
-
-When we introduce `with/1` we end up with code that is easy to understand and has fewer lines:
-
-```elixir
-with {:ok, user} <- Repo.insert(changeset),
-     {:ok, token, full_claims} <- Guardian.encode_and_sign(user, :token, claims) do
-  important_stuff(token, full_claims)
-end
-```
-
-
-As of Elixir 1.3, `with/1` statements support `else`:
-
-```elixir
-import Integer
-
-m = %{a: 1, c: 3}
-
-a =
-  with {:ok, number} <- Map.fetch(m, :a),
-    true <- is_even(number) do
-      IO.puts "#{number} divided by 2 is #{div(number, 2)}"
-      :even
-  else
-    :error ->
-      IO.puts("We don't have this item in map")
-      :error
-
-    _ ->
-      IO.puts("It is odd")
-      :odd
-  end
-```
-
-It helps to handle errors by providing `case`-like pattern matching in it. The value passed is the first non-matched expression.
