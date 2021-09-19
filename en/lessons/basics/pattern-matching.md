@@ -1,107 +1,176 @@
 ---
-version: 1.0.2
+version: 1.0.0
 title: Pattern Matching
 ---
 
-Pattern matching is a powerful part of Elixir. It allows us to match simple values, data structures, and even functions.
-In this lesson we will begin to see how pattern matching is used.
+Haskell offers a powerful type-based system for deciding function definitions
+called Pattern Matching
+
+In general, Pattern Matching is used to deconstruct algebraic types, let's see
+some examples to learn how it works
 
 {% include toc.html %}
 
-## Match Operator
+## Preamble
 
-Are you ready for a curveball? In Elixir, the `=` operator is actually a match operator, comparable to the equals sign in algebra. Writing it turns the whole expression into an equation and makes Elixir match the values on the left hand with the values on the right hand. If the match succeeds, it returns the value of the equation. Otherwise, it throws an error. Let's take a look:
+You will need to add the following lines to the top of your Haskell source 
+file (`.hs`) to be able to run these examples
 
-```elixir
-iex> x = 1
-1
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Text ( Text )
 ```
 
-Now let's try some simple matching:
+## Enumerated Types
 
-```elixir
-iex> 1 = x
-1
-iex> 2 = x
-** (MatchError) no match of right hand side value: 1
+Say we have a type for the four suits of playing cards
+
+```haskell
+data Suit = Hearts | Diamonds | Clubs | Spades
 ```
 
-Let's try that with some of the collections we know:
+Let's write a function which will read the color of the suit
 
-```elixir
-# Lists
-iex> list = [1, 2, 3]
-[1, 2, 3]
-iex> [1, 2, 3] = list
-[1, 2, 3]
-iex> [] = list
-** (MatchError) no match of right hand side value: [1, 2, 3]
-
-iex> [1 | tail] = list
-[1, 2, 3]
-iex> tail
-[2, 3]
-iex> [2 | _] = list
-** (MatchError) no match of right hand side value: [1, 2, 3]
-
-# Tuples
-iex> {:ok, value} = {:ok, "Successful!"}
-{:ok, "Successful!"}
-iex> value
-"Successful!"
-iex> {:ok, value} = {:error}
-** (MatchError) no match of right hand side value: {:error}
+```haskell
+-- Show the color of the suit
+suitColor :: Suit -> Text
+suitColor Hearts   = "Red"
+suitColor Diamonds = "Red"
+suitColor Clubs    = "Black"
+suitColor Spades   = "Black"
 ```
 
-## Pin Operator
+Notice how we put a data constructor (starting with an upper-case letter) in 
+the function definition
+- This is as opposed to a local variable (starting with a lower-case letter)
+- The single data constructor defines a Pattern
+- When this function is called, the first function definition matching the
+  pattern will be used
 
-The match operator performs assignment when the left side of the match includes a variable.
-In some cases this variable rebinding behavior is undesirable.
-For these situations we have the pin operator: `^`.
+This can feel awkward at first, since in imperative languages there is usually
+only a single declaration of a function
+- In Haskell, this type of syntax is common
+- Always keep in mind that Haskell functions are definitions, and with Pattern
+  Matching we are providing different definitions for different inputs
 
-When we pin a variable we match on the existing value rather than rebinding to a new one.
-Let's take a look at how this works:
+## Lists
 
-```elixir
-iex> x = 1
-1
-iex> ^x = 2
-** (MatchError) no match of right hand side value: 2
-iex> {x, ^x} = {2, 1}
-{2, 1}
-iex> x
-2
+Using Pattern Matching to handle lists is very common, here is an example
+
+### First Try
+
+```haskell
+-- How big is a list?
+listSize1 :: [Text] -> Text
+listSize1 []      = "Empty"
+listSize1 [elem1] = "One element: " <> elem1
 ```
 
-Elixir 1.2 introduced support for pins in map keys and function clauses:
+This is a dangerous function! Let's discover why
+- The first pattern `[]` will match an empty list
+- The second pattern `[elem1]` will match a single-element list
+- What happens the list has more than one element?
 
-```elixir
-iex> key = "hello"
-"hello"
-iex> %{^key => value} = %{"hello" => "world"}
-%{"hello" => "world"}
-iex> value
-"world"
-iex> %{^key => value} = %{:hello => "world"}
-** (MatchError) no match of right hand side value: %{hello: "world"}
+A runtime error happens! This is an appalling to a Haskell developer; the whole
+point of using Haskell is to catch issues like this at compile time
+
+__Note__: If you compile with `-Wall` or use `:set -Wall` in GHCi, this code
+will not compile. You'll get this warning:
+
+```console?lang=haskell&prompt=ghci>,ghci|
+    Pattern match(es) are non-exhaustive
+    In an equation for ‘listSize1’: Patterns not matched: (_:_:_)
+   |
+92 | listSize1 [] = "Empty"
+   | ^^^^^^^^^^^^^^^^^^^^^^...
 ```
 
-An example of pinning in a function clause:
+This is why `-Wall` is recommended; nobody wants a nasty surprise when they run
+their code
 
-```elixir
-iex> greeting = "Hello"
-"Hello"
-iex> greet = fn
-...>   (^greeting, name) -> "Hi #{name}"
-...>   (greeting, name) -> "#{greeting}, #{name}"
-...> end
-#Function<12.54118792/2 in :erl_eval.expr/5>
-iex> greet.("Hello", "Sean")
-"Hi Sean"
-iex> greet.("Mornin'", "Sean")
-"Mornin', Sean"
-iex> greeting
-"Hello"
+### A Safer Choice
+
+Here is a safe example of list Pattern Matching
+
+```haskell
+-- How big is a list?
+-- Using the `_` pattern is a catch-all for any value
+listSizeCatch :: [Text] -> Text
+listSizeCatch []      = "Empty"
+listSizeCatch [elem1] = "One element: " <> elem1
+listSizeCatch _       = "More than one element"
 ```
 
-Note in the `"Mornin'"` example that the reassignment of `greeting` to `"Mornin'"` only happens inside the function. Outside of the function `greeting` is still `"Hello"`.
+The `_` pattern matches everything, so we know this function will work no matter
+what we pass it
+
+### Matching With Constructors
+
+```haskell
+-- How big is a list?
+listSizeCons :: [Text] -> Text
+listSizeCons []      = "Empty"
+listSizeCons (elem1:[]) = "One element: " <> elem1
+listSizeCons (elem1:_)  = "More than one element, starting with: " <> elem1
+```
+
+Notice how the list constructor `:` is used in the patterns
+- In the `(elem1:[])` pattern, it constructs the value with an empty list `[]`
+  - This will only match a single-element list
+- In the `(elem1:_)` pattern, it constructs the value with a the catch-all
+  symbol `_`
+  - So this pattern will match any list with one or more elemens
+  - This pattern would match a single-element list, but it won't since it is
+    listed *after* single-element pattern
+
+Order matters! The first matching pattern will be used, even if later patterns
+would also match
+
+__Note__: Parentheses `()` are required to write patterns with constructors
+
+## Maybe
+
+### Pattern Matching in Function Definition
+
+Pattern Matching provides a nice way to deconstruct `Maybe` values
+
+```haskell
+maybeToText :: Maybe Text -> Text
+maybeToText Nothing = "No text! Nothing!"
+maybeToText (Just t) = "The text is: " <> t
+```
+
+Notice how the value `t` can be used if the `(Just t)` pattern is matched; of
+course this value doesn't exist if the `Maybe` value is `Nothing`
+
+Just as with lists, the parentheses `()` are necessary when we are matching the
+`Just` constructor
+
+### Pattern Matching in a `case` Statement
+
+```haskell
+maybeWithCase :: Maybe Text -> Text
+maybeWithCase mText = let
+    textFound = case mText of
+        Nothing -> "No text"
+        (Just t) -> t
+    in
+    "I found: " <> textFound
+```
+
+Pattern Matching is also used to define `case` statements, and can be helpful 
+for defining intermediate values
+
+## Either
+
+Pattern matching is common for deconstructing Either values
+
+```haskell
+eitherToText :: Either Text Text -> Text
+eitherToText (Left errMsg) = "Error: " <> errMsg
+eitherToText (Right okMsg) = "Success: " <> okMsg
+```
+
+
+

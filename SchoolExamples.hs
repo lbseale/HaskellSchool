@@ -32,13 +32,13 @@ weatherDescription weather tempInC = let
 
 -- Offer some helpful advice, given the weather
 weatherAdvice :: Text -> Text
-weatherAdvice weatherDescription = 
-    case weatherDescription of
+weatherAdvice weather = 
+    case weather of
         "fair"     -> "It'll be nice today"
         "rainy"    -> "Bring an umbrella"
         "sunny"    -> "Wear sunscreen"
         "freezing" -> "You'll need a coat"
-        otherwise  -> "Not sure"
+        _          -> "Not sure"
 
 -- ***** Guard *****
 
@@ -69,3 +69,77 @@ biggerOrSmaller val1 val2
     | val1 > val2 = "Value 1 is bigger"
     | val2 > val1 = "Value 2 is bigger"
     | otherwise   = "Both values are equal"
+
+-- ********** Pattern Matching **********
+
+-- import Data.Text ( append )
+
+-- ***** Enum type *****
+
+data Suit = Hearts | Diamonds | Clubs | Spades
+--     deriving Eq
+
+-- Read out the color of the suit
+suitColor :: Suit -> Text
+suitColor Hearts   = "Red"
+suitColor Diamonds = "Red"
+suitColor Clubs    = "Black"
+suitColor Spades   = "Black"
+
+-- Same as above, but use a guard instead of pattern matching
+-- suitColorWithGuard :: Suit -> Text
+-- suitColorWithGuard suit
+--     | suit == Hearts || suit == Diamonds = "Red"
+--     | otherwise = "Black"
+
+-- ***** Lists *****
+
+-- How big is a list?
+-- Danger! Incomplete patterns!
+-- If you compile with `-Wall`, or use `:set -Wall` in GHCI you will get a
+-- warning about this
+listSize1 :: [Text] -> Text
+listSize1 []      = "Empty"
+listSize1 [elem1] = "One element: " <> elem1
+
+-- How big is a list?
+-- Using the `_` pattern is a catch-all for any value
+listSizeCatch :: [Text] -> Text
+listSizeCatch []      = "Empty"
+listSizeCatch [elem1] = "One element: " <> elem1
+listSizeCatch _       = "More than one element"
+
+-- How big is a list?
+-- Notice how the list constructor `:` is used
+-- In the `(elem1:[])` pattern, it constructs the value with an empty list `[]`
+-- This indicates a single-element list
+-- In the `(elem1:_)` pattern, it constructs the value with a list of any 
+-- length
+listSizeCons :: [Text] -> Text
+listSizeCons []      = "Empty"
+listSizeCons (elem1:[]) = "One element: " <> elem1
+listSizeCons (elem1:_)  = "More than one element, starting with: " <> elem1
+
+-- ***** Maybe *****
+
+-- Note how the pattern-match offers a way to deconstruct a `Maybe` value
+maybeToText :: Maybe Text -> Text
+maybeToText Nothing = "No text! Nothing!"
+maybeToText (Just t) = "The text is: " <> t
+
+-- Pattern matches also work in `case` statements
+maybeWithCase :: Maybe Text -> Text
+maybeWithCase mText = let
+    textFound = case mText of
+        Nothing -> "No text"
+        (Just t) -> t
+    in
+    "I found: " <> textFound
+
+-- ***** Either *****
+
+-- Pattern matching is common for deconstructing Either values
+eitherToText :: Either Text Text -> Text
+eitherToText (Left errMsg) = "Error: " <> errMsg
+eitherToText (Right okMsg) = "Success: " <> okMsg
+

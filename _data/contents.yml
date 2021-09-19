@@ -8,4 +8,5 @@ basics:
   - algebraic-data-types
   - lists-tuples
   - control-structures
+  - pattern-matching
   - containers
