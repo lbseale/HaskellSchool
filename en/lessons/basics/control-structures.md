@@ -20,7 +20,7 @@ examples of how they work
 
 {% include toc.html %}
 
-## Preamble
+## Pragmas and Imports
 
 You will need to add the following lines to the top of your Haskell source 
 file (`.hs`) to be able to run these examples
@@ -78,7 +78,7 @@ weatherAdvice weatherDescription =
         "rainy"    -> "Bring an umbrella"
         "sunny"    -> "Wear sunscreen"
         "freezing" -> "You'll need a coat"
-        otherwise  -> "Not sure"
+        _          -> "Not sure"
 ```
 
 Case statements use a feature called *Pattern Matching* to decide which case to
@@ -121,4 +121,15 @@ biggerOrSmaller val1 val2
     | val2 > val1 = "Value 2 is bigger"
     | otherwise   = "Both values are equal"
 ```
+
+### Order
+
+Order matters in guards: the first condition that returns `True` will be used
+
+### Otherwise
+
+`otherwise` is commonly used as the last condition in a guard as a catch-all
+
+It is actually just an alias for `True`, and so will always be met
+
 

@@ -11,7 +11,7 @@ some examples to learn how it works
 
 {% include toc.html %}
 
-## Preamble
+## Pragmas and Imports
 
 You will need to add the following lines to the top of your Haskell source 
 file (`.hs`) to be able to run these examples
@@ -30,7 +30,30 @@ Say we have a type for the four suits of playing cards
 data Suit = Hearts | Diamonds | Clubs | Spades
 ```
 
-Let's write a function which will read the color of the suit
+### Case Statement
+
+Let's write a `case` statement which will read the color of the suit
+
+```haskell
+-- Show the color of the suit
+suitColorCase :: Suit -> Text
+suitColorCase suitIn = case suitIn of
+     Hearts   -> "Red"
+     Diamonds -> "Red"
+     Clubs    -> "Black"
+     Spades   -> "Black"
+```
+
+The `case` statement is using Pattern Matching to decide which text to return
+
+The value of `suitIn` is inspected, and then checked against the given patterns
+in the `case` statement
+- In this example, each pattern is just a data constructor
+- We will get to see more sophisticated patterns a bit later
+
+### Pattern
+
+It turns out that we can write the same function more simply
 
 ```haskell
 -- Show the color of the suit
@@ -41,12 +64,14 @@ suitColor Clubs    = "Black"
 suitColor Spades   = "Black"
 ```
 
-Notice how we put a data constructor (starting with an upper-case letter) in 
-the function definition
-- This is as opposed to a local variable (starting with a lower-case letter)
-- The single data constructor defines a Pattern
-- When this function is called, the first function definition matching the
-  pattern will be used
+Here we have build the patterns into the function definition, without using a
+`case` statment
+
+The function works the same way: any input value is inspected and matched
+with the different patterns provided for the function definition
+
+In truth, the `case` statement is redundant in the first example, and as
+Haskell programmers we like to keep our code as concise as is reasonable
 
 This can feel awkward at first, since in imperative languages there is usually
 only a single declaration of a function
@@ -56,7 +81,10 @@ only a single declaration of a function
 
 ## Lists
 
-Using Pattern Matching to handle lists is very common, here is an example
+Pattern Matching can be used on more sophisticated patterns then just plain data
+constructors.
+
+Using Pattern Matching to handle lists is very common, let's see some examples
 
 ### First Try
 
@@ -107,6 +135,8 @@ what we pass it
 
 ### Matching With Constructors
 
+We can use any data constructor in patterns, including the list constructor `:`
+
 ```haskell
 -- How big is a list?
 listSizeCons :: [Text] -> Text
@@ -118,6 +148,7 @@ listSizeCons (elem1:_)  = "More than one element, starting with: " <> elem1
 Notice how the list constructor `:` is used in the patterns
 - In the `(elem1:[])` pattern, it constructs the value with an empty list `[]`
   - This will only match a single-element list
+  - It is the same as writing `[elem1]`
 - In the `(elem1:_)` pattern, it constructs the value with a the catch-all
   symbol `_`
   - So this pattern will match any list with one or more elemens
@@ -147,7 +178,9 @@ course this value doesn't exist if the `Maybe` value is `Nothing`
 Just as with lists, the parentheses `()` are necessary when we are matching the
 `Just` constructor
 
-### Pattern Matching in a `case` Statement
+### Pattern Matching in an Intermediate Value
+
+Let's use Pattern Matching in a `case` statemen to define an intermediate value
 
 ```haskell
 maybeWithCase :: Maybe Text -> Text
@@ -158,9 +191,6 @@ maybeWithCase mText = let
     in
     "I found: " <> textFound
 ```
-
-Pattern Matching is also used to define `case` statements, and can be helpful 
-for defining intermediate values
 
 ## Either
 
