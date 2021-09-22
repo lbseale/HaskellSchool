@@ -42,14 +42,17 @@ weatherAdvice weather =
 
 -- ***** Guard *****
 
--- Subjective descriptions of temperature
-subjectiveTemp :: Int -> Text
-subjectiveTemp tmpInC
-    | tmpInC <= 0                  = "Freezing"
-    | tmpInC > 0   && tmpInC <= 20 = "Cold"
-    | tmpInC > 20  && tmpInC <= 30 = "Comfortable"
-    | tmpInC > 30                  = "Hot"
-
+-- Subjective descriptions of temperature, after converting to Celcius
+-- Note how `tmpInC` is defined in the `where` clause
+subjectiveTemp :: Double -> Text
+subjectiveTemp tmpInFaranheit
+    | tmpInC <= 0.0                   = "Freezing"
+    | tmpInC > 0.0  && tmpInC <= 20.0 = "Cold"
+    | tmpInC > 20.0 && tmpInC <= 30.0 = "Comfortable"
+    | tmpInC > 30.0                   = "Hot"
+    | otherwise                       = "Not Sure"
+  where
+    tmpInC = (tmpInFaranheit - 32.0 ) * ( 5.0 / 9.0 )
 
 -- Clothing Sizer
 -- Note that `yourSize` is defined in a where clause, then used in the
@@ -69,6 +72,16 @@ biggerOrSmaller val1 val2
     | val1 > val2 = "Value 1 is bigger"
     | val2 > val1 = "Value 2 is bigger"
     | otherwise   = "Both values are equal"
+
+badGuard :: Text -> Text
+badGuard txtIn
+    | txtIn == "Ok" = "It worked"
+
+
+safeGuard :: Text -> Text
+safeGuard txtIn
+    | txtIn == "Ok" = "It worked"
+    | otherwise = "It still worked"
 
 -- ********** Pattern Matching **********
 

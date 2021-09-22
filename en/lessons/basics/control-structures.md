@@ -36,6 +36,21 @@ import Data.Text ( Text )
 Haskell provides a simple set of keywords for `if` statements, with only a 
 single `else` condition
 
+### Syntax
+
+```
+result = if (boolExpression) 
+         then (expression1)
+         else (expression2)
+```
+
+- If the first expression evaluates to `True`, then the expression after the
+  `then` keyword is evaluated
+- if it evaluates to `False`, then then expression after the `else` keyword is
+  evaluated
+
+### Examples
+
 ```haskell
 -- Is this integer even or odd?
 evenOrOdd :: Int -> Text
@@ -60,6 +75,8 @@ weatherDescription weather tempInC = let
     warmOrCold <> " and " <> niceOrGloomy
 ```
 
+### Usage
+
 `if` statements are not the most common control structure 
 
 They are handy if you have a simple definition, and don't need one of the more
@@ -68,6 +85,23 @@ flexible structures we will see soon
 ## Case Statements
 
 Case statements offer a way to switch on any one of a number of possible values
+
+### Syntax
+
+```
+result = case (expression) of
+    (pattern1) -> (expression1) 
+    (pattern2) -> (expression2)
+    ...
+    _          -> (expressionLast)
+```
+
+- The expression between the `case` and `of` keywords is evaluated
+- Its result is looked up in the list of patterns
+- For the first pattern that matches, its expression is evaluated
+- The underscore (`_`) is a catch-all pattern that will always match
+
+### Examples
 
 ```haskell
 -- Offer some helpful advice, given the weather
@@ -81,26 +115,55 @@ weatherAdvice weatherDescription =
         _          -> "Not sure"
 ```
 
-Case statements use a feature called *Pattern Matching* to decide which case to
-choose; we will explore this further in the next chapter
+### Usage
+
+Case statements are used commonly for intermediate values, and to decide the path
+that code will take
+
+The *Pattern Matching* feature they use will be discussed more in the next
+lesson
 
 ## Guards
 
 Guards allow you to choose between one of many possible conditions; they are
 similar to an `if`-`else if` structure
 
-When using guards to define a value, the `=` sign is omitted
+### Syntax
+
+```
+result
+    | (boolExpression1) = (resultExpression1)
+    | (boolExpression2) = (resultExpression2)
+    | ...
+    | otherwise = (resultExpressionLast)
+```
+
+- Each expression on the right side of the `|` character evaluates to a `Bool`
+- For the first one which evaluates to `True`, its expression is evaluated to
+  define the result
+- Note how the `=` symbol is not used between the result and the guards
+
+### Examples
 
 ```haskell
--- Subjective descriptions of temperature
--- Note the lack of an `=` sign after the function name
-subjectiveTemp :: Int -> Text
-subjectiveTemp tmpInC
-    | tmpInC <= 0                  = "Freezing"
-    | tmpInC > 0   && tmpInC <= 20 = "Cold"
-    | tmpInC > 20  && tmpInC <= 30 = "Comfortable"
-    | tmpInC > 30                  = "Hot"
+-- State which value is bigger
+biggerOrSmaller :: Int -> Int -> Text
+biggerOrSmaller val1 val2
+    | val1 > val2 = "Value 1 is bigger"
+    | val2 > val1 = "Value 2 is bigger"
+    | otherwise   = "Both values are equal"
 
+-- Subjective descriptions of temperature, after converting to Celcius
+-- Note how `tmpInC` is defined in the `where` clause
+subjectiveTemp :: Double -> Text
+subjectiveTemp tmpInFaranheit
+    | tmpInC <= 0.0                   = "Freezing"
+    | tmpInC > 0.0  && tmpInC <= 20.0 = "Cold"
+    | tmpInC > 20.0 && tmpInC <= 30.0 = "Comfortable"
+    | tmpInC > 30.0                   = "Hot"
+    | otherwise                       = "Not Sure"
+  where
+    tmpInC = (tmpInFaranheit - 32.0 ) * ( 5.0 / 9.0 )
 
 -- Clothing Sizer
 -- Note that `yourSize` is defined in a where clause, then used in the
@@ -113,23 +176,62 @@ whatSize heightInCm = "You're a size " <> yourSize
         | heightInCm > 166 && heightInCm <= 178 = " Medium"
         | heightInCm > 178                      = " Large"
         | otherwise                             = " Not sure"
-
--- State which value is bigger
-biggerOrSmaller :: Int -> Int -> Text
-biggerOrSmaller val1 val2
-    | val1 > val2 = "Value 1 is bigger"
-    | val2 > val1 = "Value 2 is bigger"
-    | otherwise   = "Both values are equal"
 ```
 
-### Order
+### Usage
 
-Order matters in guards: the first condition that returns `True` will be used
+Guards are commonly used directly in function definitions, especially with
+`where` statements
 
 ### Otherwise
 
-`otherwise` is commonly used as the last condition in a guard as a catch-all
+`otherwise` is an alias for `True`, and is should be used as a catch-all for the
+last guard, to ensure that one of them matches
 
-It is actually just an alias for `True`, and so will always be met
+If a guard statement is evaluated, and none of its expressions return `True`, a
+runtime error occurs!
 
+#### What Happens When You Don't Use `otherwise`
 
+```haskell
+badGuard :: Text -> Text
+badGuard txtIn
+    | txtIn == "Ok" = "It worked"
+```
+
+```console?lang=haskell&prompt=ghci>,ghci|
+*Main> badGuard "noMatch"
+"*** Exception: SchoolExamples.hs:(74,1)-(75,33): Non-exhaustive patterns in function badGuard
+```
+
+#### Back to Safety
+
+```haskell
+safeGuard :: Text -> Text
+safeGuard txtIn
+    | txtIn == "Ok" = "It worked"
+    | otherwise = "It still worked"
+```
+
+```console?lang=haskell&prompt=ghci>,ghci|
+*Main> safeGuard "noMatch"
+"It still worked"
+```
+
+#### Catching Non-Exhaustive Guards
+
+If you compile with `-Wall` or use `:set -Wall` in GHCi, the compiler will give
+you a warning about non-exhaustive guards
+
+```console?lang=haskell&prompt=ghci>,ghci|
+*Main> :set -Wall
+*Main> :r
+[1 of 1] Compiling Main             ( SchoolExamples.hs, interpreted )
+
+SchoolExamples.hs:74:1: warning: [-Wincomplete-patterns]
+    Pattern match(es) are non-exhaustive
+    In an equation for ‘badGuard’: Patterns not matched: _
+   |
+74 | badGuard txtIn
+   | ^^^^^^^^^^^^^^...
+```
