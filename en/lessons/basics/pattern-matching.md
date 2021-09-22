@@ -30,7 +30,7 @@ Say we have a type for the four suits of playing cards
 data Suit = Hearts | Diamonds | Clubs | Spades
 ```
 
-### Case Statement
+### Using a Case Statement
 
 Let's write a case statement which will read the color of the suit
 
@@ -46,12 +46,12 @@ suitColorCase suitIn = case suitIn of
 
 The case statement is using Pattern Matching to decide which text to return
 
-The value of `suitIn` is inspected, and then checked against the given patterns
+The value of `suitIn` is evaluated, and then checked against the given patterns
 in the case statement
 - In this example, each pattern is just a data constructor
 - We will get to see more sophisticated patterns a bit later
 
-### Pattern
+### Using Pattern Matching
 
 It turns out that we can write the same function more simply
 
@@ -198,7 +198,7 @@ maybeToText (Just t) = "The text is: " <> t
 Notice how the value `t` can be used if the `(Just t)` pattern is matched; of
 course this value doesn't exist if the `Maybe` value is `Nothing`
 
-Just as with lists, the parentheses `()` are necessary when we are matching the
+As with lists, the parentheses `()` are necessary when we are matching the
 `Just` constructor
 
 ### Pattern Matching in an Intermediate Value
