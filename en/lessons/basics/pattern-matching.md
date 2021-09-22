@@ -3,8 +3,8 @@ version: 1.0.0
 title: Pattern Matching
 ---
 
-Haskell offers a powerful type-based system for deciding function definitions
-called Pattern Matching
+Haskell offers a powerful type-based system for defining functions called 
+Pattern Matching
 
 In general, Pattern Matching is used to deconstruct algebraic types, let's see
 some examples to learn how it works
@@ -22,7 +22,7 @@ file (`.hs`) to be able to run these examples
 import Data.Text ( Text )
 ```
 
-## Enumerated Types
+## Enumerated Type Example
 
 Say we have a type for the four suits of playing cards
 
@@ -32,7 +32,7 @@ data Suit = Hearts | Diamonds | Clubs | Spades
 
 ### Case Statement
 
-Let's write a `case` statement which will read the color of the suit
+Let's write a case statement which will read the color of the suit
 
 ```haskell
 -- Show the color of the suit
@@ -44,10 +44,10 @@ suitColorCase suitIn = case suitIn of
      Spades   -> "Black"
 ```
 
-The `case` statement is using Pattern Matching to decide which text to return
+The case statement is using Pattern Matching to decide which text to return
 
 The value of `suitIn` is inspected, and then checked against the given patterns
-in the `case` statement
+in the case statement
 - In this example, each pattern is just a data constructor
 - We will get to see more sophisticated patterns a bit later
 
@@ -65,12 +65,12 @@ suitColor Spades   = "Black"
 ```
 
 Here we have build the patterns into the function definition, without using a
-`case` statement
+case statement
 
 The function works the same way: any input value is inspected and matched
 with the different patterns provided for the function definition
 
-In truth, the `case` statement is redundant in the first example, and as
+In truth, the case statement is redundant in the first example, and as
 Haskell programmers we like to keep our code as concise as is reasonable
 
 This can feel awkward at first, since in imperative languages there is usually
@@ -79,7 +79,28 @@ only a single declaration of a function
 - Always keep in mind that Haskell functions are definitions, and with Pattern
   Matching we are providing different definitions for different inputs
 
-## Lists
+## Pattern Matching Syntax
+
+```
+functionName (pattern1) = (expression1)
+functionName (pattern2) = (expression2)
+...
+functionName _ = (expressionLast)
+```
+
+- A function is defined more than one time, each with a different pattern
+- For the first pattern that matches the value with which the function was
+  called, its expression is evaluated
+- The underscore (`_`) is a catch-all that matches any value
+
+### Patterns In General
+
+A pattern is a combination of data constructors that could match a value
+
+This is an admittedly abstract definition, so let's look at more examples to see
+how it works in practice
+
+## List Example
 
 Pattern Matching can be used on more sophisticated patterns then just plain data
 constructors.
@@ -103,20 +124,6 @@ This is a dangerous function! Let's discover why
 A runtime error happens! This is an appalling to a Haskell developer; the whole
 point of using Haskell is to catch issues like this at compile time
 
-__Note__: If you compile with `-Wall` or use `:set -Wall` in GHCi, this code
-will not compile. You'll get this warning:
-
-```console?lang=haskell&prompt=ghci>,ghci|
-    Pattern match(es) are non-exhaustive
-    In an equation for ‘listSize1’: Patterns not matched: (_:_:_)
-   |
-92 | listSize1 [] = "Empty"
-   | ^^^^^^^^^^^^^^^^^^^^^^...
-```
-
-This is why `-Wall` is recommended; nobody wants a nasty surprise when they run
-their code
-
 ### A Safer Choice
 
 Here is a safe example of list Pattern Matching
@@ -131,7 +138,23 @@ listSizeCatch _       = "More than one element"
 ```
 
 The `_` pattern matches everything, so we know this function will work no matter
-what we pass it
+what the first value is
+
+#### Catching Non-Exhaustive Patterns
+
+If you compile with `-Wall` or use `:set -Wall` in GHCi, you will be warned 
+about non-exhaustive patterns:
+
+```console?lang=haskell&prompt=ghci>,ghci|
+    Pattern match(es) are non-exhaustive
+    In an equation for ‘listSize1’: Patterns not matched: (_:_:_)
+   |
+92 | listSize1 [] = "Empty"
+   | ^^^^^^^^^^^^^^^^^^^^^^...
+```
+
+This is why `-Wall` is recommended; nobody wants a nasty surprise when they run
+their code
 
 ### Matching With Constructors
 
@@ -180,7 +203,7 @@ Just as with lists, the parentheses `()` are necessary when we are matching the
 
 ### Pattern Matching in an Intermediate Value
 
-Let's use Pattern Matching in a `case` statement to define an intermediate value
+Let's use Pattern Matching in a case statement to define an intermediate value
 
 ```haskell
 maybeWithCase :: Maybe Text -> Text
