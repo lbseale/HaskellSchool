@@ -33,7 +33,7 @@ import Data.Text ( Text )
 
 ## If Statements
 
-Haskell provides a simple set of keywords for `if` statments, with only a 
+Haskell provides a simple set of keywords for `if` statements, with only a 
 single `else` condition
 
 ```haskell

@@ -65,7 +65,7 @@ suitColor Spades   = "Black"
 ```
 
 Here we have build the patterns into the function definition, without using a
-`case` statment
+`case` statement
 
 The function works the same way: any input value is inspected and matched
 with the different patterns provided for the function definition
@@ -149,9 +149,9 @@ Notice how the list constructor `:` is used in the patterns
 - In the `(elem1:[])` pattern, it constructs the value with an empty list `[]`
   - This will only match a single-element list
   - It is the same as writing `[elem1]`
-- In the `(elem1:_)` pattern, it constructs the value with a the catch-all
+- In the `(elem1:_)` pattern, it constructs the value with the catch-all
   symbol `_`
-  - So this pattern will match any list with one or more elemens
+  - So this pattern will match any list with one or more element
   - This pattern would match a single-element list, but it won't since it is
     listed *after* single-element pattern
 
@@ -180,7 +180,7 @@ Just as with lists, the parentheses `()` are necessary when we are matching the
 
 ### Pattern Matching in an Intermediate Value
 
-Let's use Pattern Matching in a `case` statemen to define an intermediate value
+Let's use Pattern Matching in a `case` statement to define an intermediate value
 
 ```haskell
 maybeWithCase :: Maybe Text -> Text
