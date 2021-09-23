@@ -46,7 +46,7 @@ result = if (boolExpression)
 
 - If the first expression evaluates to `True`, then the expression after the
   `then` keyword is evaluated
-- if it evaluates to `False`, then then expression after the `else` keyword is
+- if it evaluates to `False`, then the expression after the `else` keyword is
   evaluated
 
 ### Examples
@@ -156,14 +156,14 @@ biggerOrSmaller val1 val2
 -- Subjective descriptions of temperature, after converting to Celcius
 -- Note how `tmpInC` is defined in the `where` clause
 subjectiveTemp :: Double -> Text
-subjectiveTemp tmpInFaranheit
+subjectiveTemp tmpInF
     | tmpInC <= 0.0                   = "Freezing"
     | tmpInC > 0.0  && tmpInC <= 20.0 = "Cold"
     | tmpInC > 20.0 && tmpInC <= 30.0 = "Comfortable"
     | tmpInC > 30.0                   = "Hot"
     | otherwise                       = "Not Sure"
   where
-    tmpInC = (tmpInFaranheit - 32.0 ) * ( 5.0 / 9.0 )
+    tmpInC = (tmpInF - 32.0) * ( 5.0 / 9.0 )
 
 -- Clothing Sizer
 -- Note that `yourSize` is defined in a where clause, then used in the
@@ -172,10 +172,10 @@ whatSize :: Int -> Text
 whatSize heightInCm = "You're a size " <> yourSize
   where
     yourSize
-        | heightInCm > 0   && heightInCm <= 166 = " Small"
-        | heightInCm > 166 && heightInCm <= 178 = " Medium"
-        | heightInCm > 178                      = " Large"
-        | otherwise                             = " Not sure"
+        | heightInCm > 0   && heightInCm <= 166 = "Small"
+        | heightInCm > 166 && heightInCm <= 178 = "Medium"
+        | heightInCm > 178                      = "Large"
+        | otherwise                             = "Not sure"
 ```
 
 ### Usage
