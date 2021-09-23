@@ -20,7 +20,7 @@ examples of how they work
 
 {% include toc.html %}
 
-## Pragmas and Imports
+## Extensions and Imports
 
 You will need to add the following lines to the top of your Haskell source 
 file (`.hs`) to be able to run these examples
