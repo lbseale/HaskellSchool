@@ -4,10 +4,12 @@ title: Pattern Matching
 ---
 
 Haskell offers a powerful type-based system for defining functions called 
-Pattern Matching
+*pattern matching*
 
-In general, Pattern Matching is used to deconstruct algebraic types, let's see
-some examples to learn how it works
+In general, pattern matching is used to deconstruct algebraic types
+
+We will look at an example of how it works, talk about it in general, then see
+some more examples
 
 {% include toc.html %}
 
@@ -44,7 +46,7 @@ suitColorCase suitIn = case suitIn of
      Spades   -> "Black"
 ```
 
-The case statement is using Pattern Matching to decide which text to return
+The case statement is using pattern matching to decide which text to return
 
 The value of `suitIn` is evaluated, and then checked against the given patterns
 in the case statement
@@ -64,20 +66,20 @@ suitColor Clubs    = "Black"
 suitColor Spades   = "Black"
 ```
 
-Here we have build the patterns into the function definition, without using a
+Here we have built the patterns into the function definition, without using a
 case statement
 
 The function works the same way: any input value is inspected and matched
-with the different patterns provided for the function definition
+with the patterns provided for the function definition
 
 In truth, the case statement is redundant in the first example, and as
 Haskell programmers we like to keep our code as concise as is reasonable
 
 This can feel awkward at first, since in imperative languages there is usually
 only a single declaration of a function
-- In Haskell, this type of syntax is common
-- Always keep in mind that Haskell functions are definitions, and with Pattern
-  Matching we are providing different definitions for different inputs
+- In Haskell, pattern matching syntax is common
+- Always keep in mind that Haskell functions are definitions, and with pattern
+  matching we are providing different definitions for different inputs
 
 ## Pattern Matching Syntax
 
@@ -97,15 +99,33 @@ functionName _ = (expressionLast)
 
 A pattern is a combination of data constructors that could match a value
 
-This is an admittedly abstract definition, so let's look at more examples to see
-how it works in practice
+Functions are not permitted in patterns -- If you need to use a function,
+consider using guards
+
+#### Examples of Patterns
+
+```
+"banana" -- A `Text` value
+7        -- An `Int` value
+[]       -- An empty list
+(x:xs)   -- A list with one or more values, constructed with `:`
+         -- `x` is the first element of the list, `xs` is the rest of the list
+Nothing  -- A constructor for the `Maybe` type
+(Just v) -- A constsructor for the `Maybe` type, where `v` is the value
+```
+
+#### Examples of Not Patterns
+
+```
+(7 - 2)     -- Functions are not allowed in patterns, `-` is a function
+(x > 5)     -- Functions are not allowed in patterns, `>` is a function
+            -- Consider a guard
+(=="apple") -- Seriously, no functions allowed, `==` is a function
+```
 
 ## List Example
 
-Pattern Matching can be used on more sophisticated patterns then just plain data
-constructors.
-
-Using Pattern Matching to handle lists is very common, let's see some examples
+Using pattern matching to handle lists is very common, let's see some examples
 
 ### First Try
 
@@ -126,7 +146,7 @@ point of using Haskell is to catch issues like this at compile time
 
 ### A Safer Choice
 
-Here is a safe example of list Pattern Matching
+Here is a safe example of list pattern matching
 
 ```haskell
 -- How big is a list?
@@ -163,7 +183,7 @@ We can use any data constructor in patterns, including the list constructor `:`
 ```haskell
 -- How big is a list?
 listSizeCons :: [Text] -> Text
-listSizeCons []      = "Empty"
+listSizeCons []         = "Empty"
 listSizeCons (elem1:[]) = "One element: " <> elem1
 listSizeCons (elem1:_)  = "More than one element, starting with: " <> elem1
 ```
@@ -183,15 +203,18 @@ would also match
 
 __Note__: Parentheses `()` are required to write patterns with constructors
 
+__Note__: We do not need the final catch-all symbol `_`, because we have covered
+lists of every possible size: empty, one element, more than one element
+
 ## Maybe
 
 ### Pattern Matching in Function Definition
 
-Pattern Matching provides a nice way to deconstruct `Maybe` values
+Pattern matching provides a nice way to deconstruct `Maybe` values
 
 ```haskell
 maybeToText :: Maybe Text -> Text
-maybeToText Nothing = "No text! Nothing!"
+maybeToText Nothing  = "No text! Nothing!"
 maybeToText (Just t) = "The text is: " <> t
 ```
 
@@ -203,7 +226,7 @@ As with lists, the parentheses `()` are necessary when we are matching the
 
 ### Pattern Matching in an Intermediate Value
 
-Let's use Pattern Matching in a case statement to define an intermediate value
+Let's use pattern matching in a case statement to define an intermediate value
 
 ```haskell
 maybeWithCase :: Maybe Text -> Text
@@ -223,7 +246,23 @@ Pattern matching is common for deconstructing Either values
 eitherToText :: Either Text Text -> Text
 eitherToText (Left errMsg) = "Error: " <> errMsg
 eitherToText (Right okMsg) = "Success: " <> okMsg
+
+eitherWithCase :: Either Text Text -> Text
+eitherWithCase eText = "I got a " <> result
+  where
+    result = case eText of
+        (Left errMsg) -> "Error: " <> errMsg
+        (Right okMsg) -> "Success: " <> okMsg
 ```
 
+### Pattern Matching With Multiple Arguments
 
+```haskell
+eitherMulti :: Either Text Text -> Text -> Text
+eitherMulti (Left errMsg) _ = "Error: " <> errMsg
+eitherMulti (Right okMsg) intro = intro <> okMsg
+```
+
+Notice how the catch-all symbol `_` is used in the first pattern, because we do
+not need that argument
 

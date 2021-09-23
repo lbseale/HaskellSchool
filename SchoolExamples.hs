@@ -156,3 +156,13 @@ eitherToText :: Either Text Text -> Text
 eitherToText (Left errMsg) = "Error: " <> errMsg
 eitherToText (Right okMsg) = "Success: " <> okMsg
 
+eitherWithCase :: Either Text Text -> Text
+eitherWithCase eText = "I got a " <> result
+  where
+    result = case eText of
+        (Left errMsg) -> "Error: " <> errMsg
+        (Right okMsg) -> "Success: " <> okMsg
+
+eitherMulti :: Either Text Text -> Text -> Text
+eitherMulti (Left errMsg) _ = "Error: " <> errMsg
+eitherMulti (Right okMsg) intro = intro <> okMsg
