@@ -171,8 +171,8 @@ subjectiveTemp tmpInF
 -- silent
 -- Note how the sentences are defined by a guard in the `where` clause 
 -- Both sentences are set at once by putting them together in a tuple
-prisonersDilemma2 :: (Bool, Bool) -> Text
-prisonersDilemma2 (prisoner1Talks, prisoner2Talks) =
+prisonersDilemma :: (Bool, Bool) -> Text
+prisonersDilemma (prisoner1Talks, prisoner2Talks) =
     "Prisoner 1 sentenced to " <> prisoner1Sentence 
     <> " and Prisoner 2 sentenced to " <> prisoner2Sentence
   where

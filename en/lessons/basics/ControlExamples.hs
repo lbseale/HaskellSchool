@@ -6,8 +6,8 @@ import Data.Text ( Text )
 -- Input is a tuple, where the value is true if a prisoner tells his captors
 -- that the other prisoner did the crime, and false if he stays silent
 -- Output is number of years in jail for both of them
-prisonersDilemma :: (Bool, Bool) -> (Int, Int)
-prisonersDilemma (prisoner1Talks, prisoner2Talks)
+prisonersDilemma1 :: (Bool, Bool) -> (Int, Int)
+prisonersDilemma1 (prisoner1Talks, prisoner2Talks)
     | prisoner1Talks && prisoner2Talks         = (2, 2)
     | prisoner1Talks && not prisoner2Talks     = (0, 3)
     | not prisoner1Talks && prisoner2Talks     = (3, 0)
@@ -19,8 +19,8 @@ prisonersDilemma (prisoner1Talks, prisoner2Talks)
 -- silent
 -- Note how the sentences are defined by a guard in the `where` clause 
 -- Both sentences are set at once by putting them together in a tuple
-prisonersDilemma2 :: (Bool, Bool) -> Text
-prisonersDilemma2 (prisoner1Talks, prisoner2Talks) =
+prisonersDilemma :: (Bool, Bool) -> Text
+prisonersDilemma (prisoner1Talks, prisoner2Talks) =
     "Prisoner 1 sentenced to " <> prisoner1Sentence 
     <> " and Prisoner 2 sentenced to " <> prisoner2Sentence
   where
@@ -39,3 +39,15 @@ prisonersDilemma2 (prisoner1Talks, prisoner2Talks) =
 --         | prisoner1Talks && not prisoner2Talks     = ("0", "6")
 --         | not prisoner1Talks && prisoner2Talks     = ("6", "0")
 --         | not prisoner1Talks && not prisoner2Talks = ("2", "2")
+
+-- Check whether a Maybe Int is positive
+-- Note how the guard is used on the same line as the pattern
+maybePositive :: Maybe Int -> Maybe Int
+maybePositive (Just x) | x >= 0 = Just x
+maybePositive _ = Nothing
+
+
+
+
+
+
