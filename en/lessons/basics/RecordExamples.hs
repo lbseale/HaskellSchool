@@ -74,3 +74,14 @@ listSizeName list1@(elem1:_) = let
     in
     listLenText <> " elements, starting with: " <> elem1
 
+---- Tuples ----
+
+-- Compute the area of a rectangle, given its height and width
+rectangleArea :: (Double, Double) -> Double
+rectangleArea (height, width) = height * width
+
+
+
+
+
+

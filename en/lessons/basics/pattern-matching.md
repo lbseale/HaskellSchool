@@ -310,6 +310,16 @@ eitherMulti (Right okMsg) intro = intro <> okMsg
 Notice how the catch-all symbol (`_`) is used in the first pattern, because we do
 not need that argument
 
+## Tuples
+
+Pattern matching is a common way to obtain the values held in tuples
+
+```haskell
+-- Compute the area of a rectangle, given its height and width
+rectangleArea :: (Double, Double) -> Double
+rectangleArea (height, width) = height * width
+```
+
 ## Records
 
 ### Record Pattern Matching Syntax
