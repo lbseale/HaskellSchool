@@ -22,7 +22,7 @@ file (`.hs`) to be able to run these examples
 {-# LANGUAGE OverloadedStrings #-}
 
 import           Data.Text ( Text )
-import qualified Data.Text as Text
+import qualified Data.Text as T
 ```
 
 ## Enumerated Type Example
@@ -228,7 +228,7 @@ listSizeName []              = "Empty"
 listSizeName (elem1:[])      = "One element: " <> elem1
 listSizeName list1@(elem1:_) = let
     listLenText 
-        = Text.pack    -- Convert String to Text
+        = T.pack       -- Convert String to Text
         $ show         -- Convert length to String
         $ length list1 -- Get the length of the list
     in
@@ -321,6 +321,8 @@ rectangleArea (height, width) = height * width
 ```
 
 ## Records
+
+Records some additional pattern matching features to handle their named fields
 
 ### Record Pattern Matching Syntax
 
