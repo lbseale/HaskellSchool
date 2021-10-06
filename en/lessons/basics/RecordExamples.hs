@@ -2,7 +2,8 @@
 
 module RecordExamples where
 
-import Data.Text ( Text )
+import           Data.Text ( Text )
+import qualified Data.Text as Text
 
 data Vehicle
     = Aircraft
@@ -54,3 +55,22 @@ flyingVehicleType Aircraft
   where
     colorText = "A " <> color <> " "
 flyingVehicleType _ = "This vehicle can't fly" 
+
+
+-- Naming examples
+
+
+-- How big is a list?
+-- Note in the last pattern how the entire list is given the name `list` using
+-- the `@` symbol
+listSizeName :: [Text] -> Text
+listSizeName []              = "Empty"
+listSizeName (elem1:[])      = "One element: " <> elem1
+listSizeName list1@(elem1:_) = let
+    listLenText 
+        = Text.pack    -- Convert String to Text
+        $ show         -- Convert length to String
+        $ length list1 -- Get the length of the list
+    in
+    listLenText <> " elements, starting with: " <> elem1
+

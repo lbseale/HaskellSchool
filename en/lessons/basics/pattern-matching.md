@@ -21,7 +21,8 @@ file (`.hs`) to be able to run these examples
 ```haskell
 {-# LANGUAGE OverloadedStrings #-}
 
-import Data.Text ( Text )
+import           Data.Text ( Text )
+import qualified Data.Text as Text
 ```
 
 ## Enumerated Type Example
@@ -84,8 +85,9 @@ only a single declaration of a function
 ## Pattern Matching Syntax
 
 ```
-functionName (pattern1) = (expression1)
-functionName (pattern2) = (expression2)
+functionName       (pattern1) = (expression1)
+functionName       (pattern2) = (expression2)
+functionName name3@(pattern3) = (expression3)
 ...
 functionName _ = (expressionLast)
 ```
@@ -93,6 +95,8 @@ functionName _ = (expressionLast)
 - A function is defined more than one time, each with a different pattern
 - For the first pattern that matches the value with which the function was
   called, its expression is evaluated
+- Entire patterns can be given local names by preceding them with the at (`@`)
+  symbol
 - The underscore (`_`) is a catch-all that matches any value
 
 ### Patterns In General
@@ -205,6 +209,31 @@ __Note__: Parentheses `()` are required to write patterns with constructors
 
 __Note__: We do not need the final catch-all symbol `_`, because we have covered
 lists of every possible size: empty, one element, more than one element
+
+### Naming Entire Patterns
+
+We have seen that we can use patterns to deconstruct values, but we can also
+give names to the entire pattern
+
+We can use this feature to improve on the previous function and actually print
+out the length of the list
+
+```haskell
+-- How big is a list?
+-- Note in the last pattern how the entire list is given the name `list1` using
+-- the `@` symbol
+-- Then this name is used to get the length of the entire list
+listSizeName :: [Text] -> Text
+listSizeName []              = "Empty"
+listSizeName (elem1:[])      = "One element: " <> elem1
+listSizeName list1@(elem1:_) = let
+    listLenText 
+        = Text.pack    -- Convert String to Text
+        $ show         -- Convert length to String
+        $ length list1 -- Get the length of the list
+    in
+    listLenText <> " elements, starting with: " <> elem1
+```
 
 ## Maybe
 
